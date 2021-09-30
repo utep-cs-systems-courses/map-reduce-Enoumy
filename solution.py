@@ -126,8 +126,6 @@ def main():
     if not args.silent:
         print(f"Counts: {counts}")
 
-    print('End of tranmission. Don\'t panic!')
-
 
 if __name__ == '__main__':
     main()
