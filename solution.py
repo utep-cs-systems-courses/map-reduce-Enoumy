@@ -9,6 +9,7 @@ You can get the help menus of this program by passing in the --help flag
 
 import argparse
 import pymp
+import time
 
 
 files_to_search = [
@@ -109,9 +110,21 @@ def main():
                         help="If set to true, will only print timing results in addition to the number of threads")
     parser.add_argument('--num_threads', default=1, type=int,
                         help="Number of  threads which will be created in order to count the number of words.")
+    parser.add_argument('--no_pymp', default=False, type=bool,
+                        help="If set to true, a synchronous version that does not use pymp will run.")
     args = parser.parse_args()
 
-    print(compute_with_map_reduce(1))
+    start = time.clock_gettime(time.CLOCK_MONOTONIC)
+    if args.no_pymp:
+        counts = compute_synchronously()
+    else:
+        counts = compute_with_map_reduce(args.num_threads)
+    time_taken = time.clock_gettime(time.CLOCK_MONOTONIC) - start
+
+    print(
+        f"(pymp: {not args.no_pymp}) (# threads: {args.num_threads}) Time taken: {time_taken}")
+    if not args.silent:
+        print(f"Counts: {counts}")
 
     print('End of tranmission. Don\'t panic!')
 
